@@ -61,11 +61,11 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
 			if (!transactions.isEmpty()) {
 				accountBalance = transactions.stream()
 						.filter(transaction -> TransactionType.DEPOSIT.equals(transaction.getType()))
-						.map(transaction -> transaction.getAmount()).reduce(BigDecimal::add).get();
+						.map(transaction -> transaction.getAmount()).reduce(BigDecimal::add).orElse(new BigDecimal(0));
 
 				accountBalance = accountBalance.subtract(transactions.stream()
 						.filter(transaction -> TransactionType.WITHDRAW.equals(transaction.getType()))
-						.map(transaction -> transaction.getAmount()).reduce(BigDecimal::add).get());
+						.map(transaction -> transaction.getAmount()).reduce(BigDecimal::add).orElse(new BigDecimal(0)));
 			} else {
 				throw new BankAccountTransactionClientException(
 						"No records found for the given account: " + accountNumber,null);
